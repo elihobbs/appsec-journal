@@ -11,12 +11,15 @@ Active from April 25, 2026 — updated weekly.
 
 ---
 
-## 📁 Structureappsec-journal/
-├── writeups/          # Full lab writeups (objective → root cause → fix → retest)
-├── cheatsheets/       # Quick reference cards
-├── case-studies/      # Deeper dives and real-world analysis
-└── client-samples/    # Anonymized client deliverable samples
----
+## 📁 Structure
+
+**writeups/** — Full lab writeups (objective → root cause → fix → retest)
+
+**cheatsheets/** — Quick reference cards
+
+**case-studies/** — Deeper dives and real-world analysis
+
+**client-samples/** — Anonymized client deliverable samples
 
 ## 📝 Writeups Index
 
