@@ -1,0 +1,228 @@
+# AppSec Running Notes — Elijah Hobbs
+> Started: April 25, 2026 | Updated: add date each session
+> Add to this document every day. One session = one new section minimum.
+
+---
+
+## HOW TO USE THIS DOCUMENT
+- Add new commands as you learn them under the right section
+- Add new Bandit levels under the OverTheWire section
+- Write the "plain English" explanation in your own words — not copy-pasted
+- If you can't explain it simply, you don't understand it yet
+
+---
+
+## SECTION 1 — Linux Core Commands
+
+### Navigation
+| Command | What it does | Example |
+|---|---|---|
+| `pwd` | Print working directory — shows where you are | `pwd` → `/home/bandit3` |
+| `cd` | Change directory | `cd inhere` or `cd /home/ubuntu/Documents` |
+| `cd -` | Go back to previous directory | `cd -` |
+| `ls` | List files in current directory | `ls` |
+| `ls -l` | Long/details view — shows permissions, size, owner | `ls -l` |
+| `ls -a` | Show ALL files including hidden ones (dot files) | `ls -a` |
+| `ls -la` | Long view + all files combined | `ls -la` |
+
+> **Key insight:** On Linux, any file starting with `.` is hidden. `ls` won't show it. `ls -a` will.
+
+---
+
+### Reading Files
+| Command | What it does | Example |
+|---|---|---|
+| `cat` | Read and print file contents | `cat readme` |
+| `cat` with path | Read file without navigating to it | `cat /home/ubuntu/Documents/todo.txt` |
+| `cat ./-filename` | Read file with dash in name — needs `./` prefix | `cat ./-file07` |
+| `echo` | Output any text you provide | `echo "hello world"` |
+
+> **Key insight:** The `./` prefix is critical when filenames start with a dash. Without it, Linux thinks the dash means you're passing a flag (like `-l` or `-a`), not a filename.
+
+---
+
+### Searching & Finding
+| Command | What it does | Example |
+|---|---|---|
+| `find` | Search for files across the system | `find ./inhere -type f` |
+| `grep` | Search the CONTENTS of files for specific values | `grep "password" file.txt` |
+| `file ./*` | Detect file type for everything in directory | `file ./*` |
+
+---
+
+### find Command Deep Dive
+`find` is one of the most powerful commands in Linux. Add flags to filter results.
+
+```bash
+find [WHERE TO SEARCH] [FLAGS]
+```
+
+| Flag | What it means | Example |
+|---|---|---|
+| `./inhere` | Search inside this specific folder | `find ./inhere` |
+| `-type f` | Only return regular files (not directories/symlinks) | `-type f` |
+| `-size 1033c` | Only files exactly 1033 bytes (`c` = bytes) | `-size 1033c` |
+| `! -executable` | NOT executable — plain text/data files only | `! -executable` |
+| `-name "*.txt"` | Find files by name pattern | `-name "*.txt"` |
+
+**Full example from Bandit Level 5:**
+```bash
+find ./inhere -type f -size 1033c ! -executable
+```
+Plain English: "Search inside inhere, find only regular files, exactly 1033 bytes, that can't be run as a program."
+
+> **Real-world use:** In a real security engagement you'd use `find` to hunt for sensitive files on a compromised system — private keys, config files, credentials, backups.
+
+---
+
+### File Type Detection
+```bash
+file ./*
+```
+Runs type detection on every file in the current directory at once.
+
+| Output | Means |
+|---|---|
+| `data` | Binary — not human-readable |
+| `ASCII text` | Human-readable text |
+| `executable` | Can be run as a program |
+| `symbolic link` | Pointer to another file |
+
+> **Key insight:** `./` handles the tricky dash-prefixed filenames. `*` means "everything."
+
+---
+
+## SECTION 2 — Shell Operators
+
+| Operator | What it does | Example |
+|---|---|---|
+| `&` | Run command in background | `long_command &` |
+| `&&` | Run second command only if first succeeds | `cd inhere && ls` |
+| `>` | Redirect output — overwrites existing file | `cat file.txt > output.txt` |
+| `>>` | Redirect output — APPENDS, doesn't overwrite | `cat file.txt >> output.txt` |
+| `!` | NOT — negates the next condition | `! -executable` |
+| `\|` | Pipe — send output of one command into another | `cat file.txt \| grep "password"` |
+
+---
+
+## SECTION 3 — Hidden Files & Permissions
+
+### How Hidden Files Work
+- Files starting with `.` are hidden on Linux
+- `ls` won't show them
+- `ls -a` reveals them
+- Example: `.bashrc`, `.profile`, `...Hiding-From-You`
+
+### File Permissions Basics
+*(Add more here as you learn — Day 10 of the plan covers this deeply)*
+- `executable` = can be run as a program
+- `readable` = can be opened and read
+- `writable` = can be modified
+
+---
+
+## SECTION 4 — OverTheWire Bandit Progress
+
+**URL:** overthewire.org/wargames/bandit
+**How to connect:** `ssh bandit[N]@bandit.labs.overthewire.org -p 2220`
+
+| Level | Key concept learned | Password found |
+|---|---|---|
+| 0→1 | `cat readme` — reading a basic file | Found |
+| 1→2 | `cat ./-` — reading dash-named files with `./` prefix | Found |
+| 2→3 | Files with spaces in names — use quotes or `./` | Found |
+| 3→4 | `ls -a` reveals hidden files — `.` prefix = hidden | Found |
+| 4→5 | `file ./*` detects human-readable vs binary files | Found |
+| 5→6 | `find` with `-type f -size 1033c ! -executable` filters | Found |
+| 6→7 | *(add when complete)* | |
+| 7→8 | | |
+| 8→9 | | |
+| 9→10 | | |
+
+> **Rule:** When stuck on a level, read the clue at overthewire.org/wargames/bandit/bandit[N+1].html first. The challenge is knowing WHICH command to use, not memorizing the answer.
+
+---
+
+## SECTION 5 — InfoSec Mindset
+
+*(From your Day 1 reading — these matter more than you think)*
+
+**Occam's Razor applied to security:**
+The simplest explanation is usually correct. When testing, start with the most obvious attack surface before going deep. Don't overthink it.
+
+**On problems vs situations:**
+A problem is an emotional state. Without emotion, it's just a situation to be solved. Security work requires this mindset constantly — systems are broken, attacks happen, nothing works. Stay analytical.
+
+**On failure:**
+Failing is unavoidable and essential. Every level you can't solve immediately, every lab that stumps you, every interview that doesn't go through — that's the learning. The path is created by the steps you take.
+
+**On progress:**
+You know you've truly learned something when the question that used to confuse you no longer makes sense as a question. That's the signal.
+
+---
+
+## SECTION 6 — TryHackMe Progress
+
+| Room | Status | Key takeaway |
+|---|---|---|
+| Linux Fundamentals Part 1 | ✅ Complete | Core navigation commands |
+| Linux Fundamentals Part 2 | ⏳ Paused (paywall) | Use Linux Journey as substitute |
+| Linux Fundamentals Part 3 | ⏳ Paused (paywall) | |
+
+**Substitute resources (free):**
+- Linux Journey: linuxjourney.com
+- OverTheWire Bandit: overthewire.org/wargames/bandit
+
+---
+
+## SECTION 7 — Vocabulary Bank
+
+*(Add every new term here in your own words)*
+
+| Term | Plain-English definition |
+|---|---|
+| Binary file | A file that isn't plain text — images, executables, compiled code |
+| ASCII text | Plain human-readable text |
+| Executable | A file the system can run as a program |
+| Hidden file | Any file starting with `.` on Linux — invisible to `ls` |
+| Flag | An option you add to a command to modify its behavior (e.g., `-a`, `-l`) |
+| Argument | The input you give a command to work on (e.g., a filename or path) |
+
+---
+
+## SECTION 8 — Commands I Keep Forgetting
+
+*(Move commands here if you get them wrong twice — forces you to review)*
+
+| Command | What I kept getting wrong | Correct version |
+|---|---|---|
+| `cat ./-file07` | Forgot the `./` prefix on dash-named files | Always use `./` for files with special characters |
+| `file ./*` | Ran `file` with no argument | `file ./*` — needs the `./` and `*` |
+
+---
+
+## TEMPLATE — Add New Day Below This Line
+
+---
+
+### Day [X] — [Date] — [Topic]
+
+**Source:** (THM / OverTheWire / PortSwigger / other)
+
+**New commands learned:**
+| Command | What it does |
+|---|---|
+| | |
+
+**Key insight from today:**
+
+
+**Lab completed:**
+
+
+**What stumped me:**
+
+
+**How I solved it:**
+
+---
